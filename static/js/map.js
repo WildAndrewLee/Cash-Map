@@ -1,71 +1,5 @@
 var data = [
     {
-      "_id": "56c8ec14061b2d440baf43df",
-      "amount": 1,
-      "description": "Payment to Pocket Change",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8ec76061b2d440baf43e0",
-      "amount": 1,
-      "description": "Payment to Pocket Change",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8edf0061b2d440baf43e4",
-      "amount": 1,
-      "description": "Payment to Pocket Change",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8ee0b061b2d440baf43e6",
-      "amount": 1,
-      "description": "Payment to Pocket Change",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8eea0061b2d440baf43e8",
-      "amount": 1,
-      "description": "Payment to Pocket Change for Spotify Premium",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f2ec061b2d440baf43ef",
-      "amount": 1,
-      "description": "Payment to Pocket Change for Spotify Premium",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
       "_id": "56c8f36c061b2d440baf43f0",
       "amount": 5,
       "description": "Hey",
@@ -75,114 +9,10 @@ var data = [
       "status": "executed",
       "transaction_date": "2016-02-20",
       "type": "p2p"
-    },
-    {
-      "_id": "56c8f477061b2d440baf43f2",
-      "amount": 1,
-      "description": "Payment to Pocket Change for Spotify Premium",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b92",
-      "payer_id": "56c66be6a73e492741507b93",
-      "status": "cancelled",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f5b6061b2d440baf43f3",
-      "amount": 50,
-      "description": "string",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b35",
-      "payer_id": "56c66be6a73e492741507b34",
-      "status": "executed",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f5db061b2d440baf43f4",
-      "amount": 50,
-      "description": null,
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507b35",
-      "payer_id": "56c66be6a73e492741507b34",
-      "status": "executed",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f613061b2d440baf43f5",
-      "amount": 50,
-      "description": "string",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c64",
-      "payer_id": "56c66be6a73e492741507c61",
-      "status": "executed",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f765061b2d440baf43f7",
-      "amount": 100,
-      "description": "string",
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c7f",
-      "payer_id": "56c66be6a73e492741507c7e",
-      "status": "executed",
-      "transaction_date": "2016-02-20",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f81b061b2d440baf43f8",
-      "amount": 10,
-      "description": null,
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c64",
-      "payer_id": "56c66be6a73e492741507c61",
-      "status": "executed",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8f889061b2d440baf43fa",
-      "amount": 10,
-      "description": null,
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c64",
-      "payer_id": "56c66be6a73e492741507c61",
-      "status": "executed",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8fc3b061b2d440baf43fe",
-      "amount": 10,
-      "description": null,
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c64",
-      "payer_id": "56c66be6a73e492741507c61",
-      "status": "executed",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8fc7f061b2d440baf43ff",
-      "amount": 1,
-      "description": null,
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c64",
-      "payer_id": "56c66be6a73e492741507c61",
-      "status": "executed",
-      "type": "p2p"
-    },
-    {
-      "_id": "56c8fccf061b2d440baf4401",
-      "amount": 20,
-      "description": null,
-      "medium": "balance",
-      "payee_id": "56c66be6a73e492741507c64",
-      "payer_id": "56c66be6a73e492741507c61",
-      "status": "executed",
-      "type": "p2p"
     }
 ];
 
-(function(window, document){
+$(function(){
     var TRANSACTION_DURATION = 120; // in frames
 
     /*
@@ -195,8 +25,8 @@ var data = [
         this.end = end;
         this.frame = 0;
 
-        this._xIncrement = (this.end.x - this.start.x) / TRANSACTION_DURATION;
-        this._yIncrement = (this.end.y - this.start.y) / TRANSACTION_DURATION;
+        this._xIncrement = (this.end.lat - this.start.lat) / TRANSACTION_DURATION;
+        this._yIncrement = (this.end.lng - this.start.lng) / TRANSACTION_DURATION;
     };
 
     /*
@@ -205,7 +35,7 @@ var data = [
      * Returns false otherwise.
      */
     Transfer.prototype.increment = function(){
-        if(this.frame == 0){
+        if(this.frame == TRANSACTION_DURATION){
             this.current = this.end;
             return true;
         }
@@ -219,55 +49,105 @@ var data = [
 
     var transfers = [];
     var locations = {};
+    var rows = data.length;
 
-    for(var x = 0; x < data.length; x++){
+    var load_single = function(data){
         // Only process executed requests.
-        if(!data[x]['status'] === 'executed')
-            continue;
-
-        (function(data){
-            // get_location is implemented synchrnously.
-            if(!location.hasOwnProperty(data[payee_id])){
-                get_location(data[payee_id], function(payee_loc){
-                    locations[payee_id] = payee_loc;
-                });
-            }
-            if(!location.hasOwnProperty(data[payer_id])){
-                get_location(data[payer_id], function(payer_loc){
-                    locations[payer_id] = payer_loc;
-                });
-            }
-
-            transfers.push(new Transfer(locations[payer_id], locations[payee_id]));
-        })(data[x]);
-    }
-
-    var ele = document.getElementById('map');
-    var map = new googlemaps.Map(ele, {
-        // zoom: 5,
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-    });
-
-    function render(){
-        if(!transfers.length)
+        if(data.status !== 'executed')
             return;
 
-        var transfer = transfers[0];
-        var path = new google.maps.Polyline({
-            path: transfer.current,
-            // geodesic: true,
-            strokeColor: '#FF0000',
-            strokeOpacity: 1.0,
-            strokeWeight: 2
-        });
+        var get_payee_loc = function(cb){
+            if(!location.hasOwnProperty(data.payee_id)){
+                get_account(data.payee_id, function(acc){
+                    get_location(acc.customer_id, function(payee_loc){
+                        locations[data.payee_id] = payee_loc;
+                        if(cb) cb();
+                    });
+                });
+            }
+        };
 
-        path.setMap(map);
+        var get_payer_loc = function(cb){
+            if(!location.hasOwnProperty(data.payer_id)){
+                get_account(data.payer_id, function(acc){
+                    get_location(acc.customer_id, function(payer_loc){
+                        locations[data.payer_id] = payer_loc;
+                        if(cb) cb();
+                    });
+                });
+            }
+        };
 
-        if(transfer.increment())
-            transfers.splice(0, 1);
+        var add_transfer = function(){
+            console.log(locations);
+            transfers.push(new Transfer(locations[data.payer_id], locations[data.payee_id]));
+        };
 
-        window.requestAnimationFrame(render);
+        if(locations.hasOwnProperty(data.payer_id) && locations.hasOwnProperty(data.payee_id))
+            add_transfer();
+        else if(!locations.hasOwnProperty(data.payer_id) && locations.hasOwnProperty(data.payee_id))
+            get_payer_loc(add_transfer);
+        else if(!locations.hasOwnProperty(data.payee_id) && locations.hasOwnProperty(data.payer_id))
+            get_payee_loc(add_transfer);
+        else
+            get_payer_loc(function(){
+                get_payee_loc(add_transfer);
+            });
     }
 
-    window.requestAnimationFrame(render);
-})(window, document);
+    var load_data = function(){
+        if(data.length){
+            load_single(data.shift());
+            setTimeout(load_data, 100);
+        }
+        else{
+        }
+    };
+
+    load_data();
+
+    var wait = function(cb){
+        if(transfers.length !== rows)
+            setTimeout(function(){
+                wait(cb);
+            }, 100);
+        else{
+            cb();
+        }
+    };
+
+    var run = function(){
+        var ele = document.getElementById('map');
+        var map = new google.maps.Map(ele, {
+            zoom: 4,
+            center: {lat: 42, lng: -97},
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        });
+
+        function render(){
+            if(!transfers.length)
+                return;
+
+            var transfer = transfers[0];
+            console.log([transfer.start,transfer.end]);
+            var path = new google.maps.Polyline({
+                path: [transfer.start, transfer.end],
+                // geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+            path.setMap(map);
+
+            // if(transfer.increment())
+                transfers.shift();
+
+            window.requestAnimationFrame(render);
+        }
+
+        window.requestAnimationFrame(render);
+    };
+
+    wait(run);
+});

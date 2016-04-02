@@ -1,4 +1,4 @@
-var API_key = "4e0634307ee72e65b38c6272a292bb41";
+var API_key = "b568190515477bcebfc064f6b6246925";
 var geocoder;
 var map;
 
@@ -50,13 +50,13 @@ function get_account(account_id, callback) {
         url: "http://api.reimaginebanking.com/enterprise/accounts/" + account_id + "?key=" + API_key,
         type: "GET",
         dataType: "json",
-        async: "false",
+        async: false,
         success: function(response) {
             callback(response);
         },
         error: function(error) {
             console.log(error);
-            alert("Not successful in getting account from given account_id " + account_id);
+            console.log("Not successful in getting account from given account_id " + account_id);
         }
     });
 };
@@ -67,13 +67,13 @@ function get_customer(customer_id, callback) {
         url: "http://api.reimaginebanking.com/enterprise/customers/" + customer_id + "?key=" + API_key,
         type: "GET",
         dataType: "json",
-        async: "false",
+        async: false,
         success: function(response) {
             callback(response);
         },
         error: function(error) {
             console.log(error);
-            alert("Not successful in getting customer from given customer_id " + customer_id);
+            console.log("Not successful in getting customer from given customer_id " + customer_id);
         }
     });
 };
@@ -90,7 +90,7 @@ function get_location(customer_id, callback) {
                 callback({lat: lat, lng: lng});
             } 
             else {
-                alert("Geocode was not successful for the following reason: " + status);
+                console.log("Geocode was not successful for the following reason: " + status);
             }
         });
     };

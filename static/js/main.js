@@ -1,6 +1,6 @@
 var API_KEY = "b568190515477bcebfc064f6b6246925";
 var API_PATH = 'http://api.reimaginebanking.com/enterprise';
-var geocoder
+var geocoder;
 
 $(function(){
     geocoder = new google.maps.Geocoder();

@@ -1,28 +1,94 @@
-.center {
-     float: none;
-     margin-left: auto;
-     margin-right: auto;
+html, body {
+    font-family: Lato;
+    font-size: 14px;
+    height: 100%;
+    color: #aaa;
 }
 
-.bg {
-  background: url('/img/background.jpg');
-  filter: brightness(0.8);
-  background-size: 100%;
-  position: fixed;
-  width: 100%;
-  height: 275px; /*same height as jumbotron */
-  top:0;
-  left:0;
-  z-index: -1;
+body {
+    display: flex;
+    flex-flow: row;
 }
-.jumbotron {
-  height: 275px;
-  color: white;
-  text-shadow: #444 0 1px 1px;
-  background:transparent;
+
+#info {
+    width: 300px;
+    height: 100%;
+    box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 99999;
+}
+
+#info header {
+    border-top: 1px solid #d5d5d5;
+    border-bottom: 1px solid #d5d5d5;
+    padding: 8px 12px 12px;
+    color: #444;
+    /* box-shadow: -5px 0px 0px #5294E2 inset; */
+}
+
+h3 {
+    margin: 0px;
+    font-weight: 300;
+    font-size: 24px;
+}
+
+.input-group {
+    padding: 8px 12px;
+}
+
+.input-group div {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    border: 1px solid #aaa;
+}
+
+.input-group input {
+    flex: auto;
+}
+
+.input-group button {
+    flex: 0 1 auto;
+    border-left: 1px solid #aaa;
+}
+
+button, input {
+    padding: 4px 7px;
+}
+
+input {
+    background: none;
+    border: none;
+    color: #444;
+    outline: none;
+}
+
+button {
+    background: #fff;
+    color: #999;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+button:hover {
+    color: #444;
 }
 
 #map {
-    height: 800px;
-    width: 800px;
+    flex: auto;
+}
+
+.purchase-date {
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 300;
+    padding: 8px 12px;
+    color: #999;
+    border-bottom: 1px solid #d5d5d5;
+}
+
+.purchase-date.selected {
+    color: #000;
+    background: #f5f5f5;
 }

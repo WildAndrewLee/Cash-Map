@@ -20,7 +20,7 @@ $(function() {
 
 function api_route(){
     var route = API_PATH;
-    
+
     for(var x = 0; x < arguments.length; x++)
         route += '/' + arguments[x];
 
@@ -61,9 +61,9 @@ function get_customer(customer_id, callback) {
 // gets the location of a given customer_id
 function get_location(customer_id, callback) {
     var promise = $.Deferred();
-    
+
     get_customer(customer_id).done(function(response){
-        var loc = response['address'];    
+        var loc = response['address'];
         var address = loc["street_number"] + " " + loc["street_name"] + ", " + loc["city"] + ", " + loc["state"];
 
         geocoder.geocode({'address': address}, function(results, status) {
@@ -72,7 +72,7 @@ function get_location(customer_id, callback) {
                 var lng = results[0].geometry.location.lng();
 
                 promise.resolve({lat: lat, lng: lng});
-            } 
+            }
             else {
                 promise.reject("Geocode was not successful for the following reason: " + status);
             }
@@ -120,16 +120,11 @@ function map_properties(transfers, height, width) {
 
     zoom = Math.min(latZoom, lngZoom, ZOOM_MAX);
 
-    return { zoom: zoom, 
-             center: { lat: (max_lat - min_lat) / 2}, 
-                       lng: (max_lng - min_lng) / 2};
+    return {
+        zoom: zoom,
+        center: {
+            lat: (max_lat + min_lat) / 2,
+            lng: (max_lng + min_lng) / 2
+        }
+    };
 }
-
-// jumbotron scrolling
-function parallax(){
-    var scrolled = $(window).scrollTop();
-    $('.bg').css('height', (275-scrolled) + 'px');
-}
-$(window).scroll(function(e){
-    parallax();
-});

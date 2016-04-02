@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+
+<head>
+    <title>Cash Map</title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+    <script src="jquery.min.js"></script>
+    <script src="main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js"> </script> -->
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="jumbotron">
+        <h2 id="main_header">Cash Map</h2>
+        <p class="lead" id="sub_header1">See the flow of your money across the world</span>
+    </div>
+
+    <div class="container">
+        <div class="col-sm-7 center">
+            <div class="input-group">
+                <input id="customer_id" type="text" class="form-control" placeholder="Customer ID" value="56c66be5a73e49274150729f">
+                <span class="input-group-btn">
+                    <button id="convert" class="btn btn-default" type="button">Go!</button>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

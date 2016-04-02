@@ -82,6 +82,49 @@ function get_location(customer_id, callback) {
     return promise;
 };
 
+function map_properties(transfers, height, width) {
+    if (transfers.length == 0) return;
+
+    var min_lat = transfers[0].start.lat;
+    var min_lng = transfers[0].start.lng;
+    var max_lat = transfers[0].start.lat;
+    var max_lng = transfers[0].start.lng;
+
+    for (var x = 0; x < transfers.length; x++) {
+        if (transfers[x].end.lat < min_lat) min_lat = transfers[x].end.lat;
+        if (transfers[x].end.lng < min_lng) min_lng = transfers[x].end.lng;
+        if (transfers[x].end.lat > max_lat) max_lat = transfers[x].end.lat;
+        if (transfers[x].end.lng > max_lng) max_lng = transfers[x].end.lng;
+    }
+
+    var WORLD_DIM = { height: 256, width: 256 };
+    var ZOOM_MAX = 21;
+
+    function latRad(lat) {
+        var sin = Math.sin(lat * Math.PI / 180);
+        var radX2 = Math.log((1 + sin) / (1 - sin)) / 2;
+        return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
+    }
+
+    function zoom(mapPx, worldPx, fraction) {
+        return Math.floor(Math.log(mapPx / worldPx / fraction) / Math.LN2);
+    }
+
+    var latFraction = (latRad(max_lat) - latRad(min_lat)) / Math.PI;
+
+    var lngDiff = max_lng - min_lng;
+    var lngFraction = ((lngDiff < 0) ? (lngDiff + 360) : lngDiff) / 360;
+
+    var latZoom = zoom(height, WORLD_DIM.height, latFraction);
+    var lngZoom = zoom(width, WORLD_DIM.width, lngFraction);
+
+    zoom = Math.min(latZoom, lngZoom, ZOOM_MAX);
+
+    return { zoom: zoom, 
+             center: { lat: (max_lat - min_lat) / 2}, 
+                       lng: (max_lng - min_lng) / 2};
+}
+
 // jumbotron scrolling
 function parallax(){
     var scrolled = $(window).scrollTop();

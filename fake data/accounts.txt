@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "56ff669d480cf02f0f88a5a8",
+    "type": "Credit Card",
+    "nickname": "Foxy's account",
+    "rewards": 10000,
+    "balance": 10000,
+    "customer_id": "56c66be6a73e492741507539"
+  },
+  {
+    "_id": "56ff66e5480cf02f0f88a5a9",
+    "type": "Credit Card",
+    "nickname": "Frog's account",
+    "rewards": 10000,
+    "balance": 10000,
+    "customer_id": "56c66be6a73e492741507539"
+  },
+  {
+    "_id": "56ff66f7480cf02f0f88a5aa",
+    "type": "Credit Card",
+    "nickname": "Franny's account",
+    "rewards": 10000,
+    "balance": 10000,
+    "customer_id": "56c66be6a73e49274150753b"
+  },
+  {
+    "_id": "56ff6705480cf02f0f88a5ab",
+    "type": "Credit Card",
+    "nickname": "Dom's account",
+    "rewards": 10000,
+    "balance": 10000,
+    "customer_id": "56ff1609480cf02f0f88a574"
+  },
+  {
+    "_id": "56ff670f480cf02f0f88a5ac",
+    "type": "Credit Card",
+    "nickname": "Joe's account",
+    "rewards": 10000,
+    "balance": 10000,
+    "customer_id": "56ff166a480cf02f0f88a575"
+  }
+]

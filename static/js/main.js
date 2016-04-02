@@ -1,7 +1,10 @@
 var API_KEY = "b568190515477bcebfc064f6b6246925";
-API_KEY = '?=' + API_KEY;
-var geocoder = new google.maps.Geocoder();
-var API_PATH = 'http://api.reimaginebanking.com/enterprise/';
+var API_PATH = 'http://api.reimaginebanking.com/enterprise';
+var geocoder
+
+$(function(){
+    geocoder = new google.maps.Geocoder();
+});
 
 // changes a given customer id to its latitude/longtitude coordinates
 $(function() {
@@ -21,7 +24,7 @@ function api_route(){
     for(var x = 0; x < arguments.length; x++)
         route += '/' + arguments[x];
 
-    return route + API_KEY;
+    return route + '?key=' + API_KEY;
 }
 
 function get_account(account_id){
@@ -46,7 +49,7 @@ function get_merchant(merchant_id){
 
 // gets the customer of a given customer_id
 function get_customer(customer_id, callback) {
-    var promise = $.getJSON(api_route('customers', customer_id).promise());
+    var promise = $.getJSON(api_route('customers', customer_id)).promise();
 
     promise.fail(function(){
         console.log('Unable to fetch customer information for ID: ' + customer_id);

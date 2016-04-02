@@ -1,36 +1,7 @@
-var API_key = "b568190515477bcebfc064f6b6246925";
-var geocoder;
-var map;
-
-$(document).ready(function() {
-    // make call to get all transfers
-    geocoder = new google.maps.Geocoder();
-
-    // unit testing
-    // var cb = function(account) {
-    //     var customer_id = account["customer_id"];
-    //     var print_lat_lng = function(response) {
-    //         console.log(response["lat"], response["lng"]);
-    //     }
-    //     get_location(customer_id, print_lat_lng);
-    // };
-    // get_account("56c66be6a73e492741507b93", cb);
-
-    // gets all transfers
-    // $.ajax({
-    //     url: "http://api.reimaginebanking.com/enterprise/transfers?key=4e0634307ee72e65b38c6272a292bb41",
-    //     type: "GET",
-    //     dataType: "json",
-    //     async: "false",
-    //     success: function(response) {
-    //         console.log(response);
-    //     },
-    //     error: function(error) {
-    //         alert("Unable to load menu");
-    //         console.log(error);
-    //     }
-    // });
-});
+var API_KEY = "b568190515477bcebfc064f6b6246925";
+API_KEY = '?=' + API_KEY;
+var geocoder = new google.maps.Geocoder();
+var API_PATH = 'http://api.reimaginebanking.com/enterprise/';
 
 // changes a given customer id to its latitude/longtitude coordinates
 $(function() {
@@ -44,57 +15,68 @@ $(function() {
     });
 });
 
-// gets the account of a given account_id
-function get_account(account_id, callback) {
-    $.ajax({
-        url: "http://api.reimaginebanking.com/enterprise/accounts/" + account_id + "?key=" + API_key,
-        type: "GET",
-        dataType: "json",
-        async: false,
-        success: function(response) {
-            callback(response);
-        },
-        error: function(error) {
-            console.log(error);
-            console.log("Not successful in getting account from given account_id " + account_id);
-        }
+function api_route(){
+    var route = API_PATH;
+    
+    for(var x = 0; x < arguments.length; x++)
+        route += '/' + arguments[x];
+
+    return route + API_KEY;
+}
+
+function get_account(account_id){
+    var promise = $.getJSON(api_route('accounts', account_id)).promise();
+
+    promise.fail(function(){
+        console.log('Unable to fetch account information for ID: ' + account_id);
     });
-};
+
+    return promise;
+}
+
+function get_merchant(merchant_id){
+    var promise = $.getJSON(api_route('merchants', merchant_id)).promise();
+
+    promise.fail(function(){
+        console.log('Unable to fetch merchant information for ID: ' + merchant_id);
+    });
+
+    return promise;
+}
 
 // gets the customer of a given customer_id
 function get_customer(customer_id, callback) {
-    $.ajax({
-        url: "http://api.reimaginebanking.com/enterprise/customers/" + customer_id + "?key=" + API_key,
-        type: "GET",
-        dataType: "json",
-        async: false,
-        success: function(response) {
-            callback(response);
-        },
-        error: function(error) {
-            console.log(error);
-            console.log("Not successful in getting customer from given customer_id " + customer_id);
-        }
+    var promise = $.getJSON(api_route('customers', customer_id).promise());
+
+    promise.fail(function(){
+        console.log('Unable to fetch customer information for ID: ' + customer_id);
     });
+
+    return promise;
 };
 
 // gets the location of a given customer_id
 function get_location(customer_id, callback) {
-    var gl_cb = function(response) {
-        var loc = response["address"];
+    var promise = $.Deferred();
+    
+    get_customer(customer_id).done(function(response){
+        var loc = response['address'];    
         var address = loc["street_number"] + " " + loc["street_name"] + ", " + loc["city"] + ", " + loc["state"];
+
         geocoder.geocode({'address': address}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
+            if (status === google.maps.GeocoderStatus.OK) {
                 var lat = results[0].geometry.location.lat();
                 var lng = results[0].geometry.location.lng();
-                callback({lat: lat, lng: lng});
+
+                promise.resolve({lat: lat, lng: lng});
             } 
             else {
-                console.log("Geocode was not successful for the following reason: " + status);
+                promise.reject("Geocode was not successful for the following reason: " + status);
             }
         });
-    };
-    get_customer(customer_id, gl_cb);
+    });
+
+    return promise;
 };
 
 // jumbotron scrolling

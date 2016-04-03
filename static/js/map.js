@@ -327,6 +327,8 @@ $(function(){
                 if(customer_first_load)
                     $('.selected').removeClass('selected');
 
+                customer_first_load = false;
+
                 return;
             }
 

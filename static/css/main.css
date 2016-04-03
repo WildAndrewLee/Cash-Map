@@ -16,6 +16,8 @@ body {
     box-shadow: 1px 0px 5px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 99999;
+    display: flex;
+    flex-flow: column;
 }
 
 #info header {
@@ -61,6 +63,14 @@ button, input, select {
     box-sizing: border-box;
 }
 
+button:disabled, input:disabled, select:disabled {
+    background: #f0f0f0;
+}
+
+button:disabled:hover {
+    color: #999;
+}
+
 input {
     background: none;
     border: none;
@@ -91,6 +101,10 @@ button:hover {
 
 #map {
     flex: auto;
+}
+
+#dates {
+    overflow: auto;
 }
 
 .purchase-date {

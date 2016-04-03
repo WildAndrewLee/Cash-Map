@@ -16,6 +16,7 @@ $(function(){
     var customer_id_old = null;
     var customer_loc = null;
     var customer_accounts = null;
+    var customer_first_load = false;
 
     var current_view = null;
 
@@ -50,6 +51,14 @@ $(function(){
         ];
 
         return months[parseInt(month) - 1] + ' ' + day + ', ' + year;
+    };
+
+    var disable_input = function(){
+        $('select, input, button').attr('disabled', true);
+    };
+
+    var enable_input = function(){
+        $('select, input, button').removeAttr('disabled');
     };
 
     /*
@@ -112,7 +121,7 @@ $(function(){
                 .text(formatted_date)
                 .click(function(){
                     $('.selected').removeClass('selected');
-                    $('#' + dates[0]).addClass('selected');
+                    $('#' + date).addClass('selected');
 
                     current_view = date;
                     draw_view(date);
@@ -257,7 +266,7 @@ $(function(){
      * Draw transfer data.
      */
     var draw_data = function(payer, merchants, transfers){
-        $('#account').attr('disabled', true);
+        disable_input();
 
         var ele = $('#map').get(0);
 
@@ -313,7 +322,11 @@ $(function(){
 
         function render(){
             if(!dates.length){
-                $('#account').removeAttr('disabled');
+                enable_input();
+
+                if(customer_first_load)
+                    $('.selected').removeClass('selected');
+
                 return;
             }
 
@@ -328,6 +341,11 @@ $(function(){
                 dates.shift();
                 window.requestAnimationFrame(render);
                 return;
+            }
+
+            if(customer_first_load){
+                $('.selected').removeClass('selected');
+                $('#' + dates[0]).addClass('selected');
             }
 
             for(var x = 0; x < day.length; x++){
@@ -345,10 +363,12 @@ $(function(){
                 if(transfer.increment()){
                     done = true;
 
-                    if(merchants_copy[transfer.merchant_id].circle)
-                        merchants_copy[transfer.merchant_id].circle.setMap(null);
-
                     merchants_copy[transfer.merchant_id].visits++;
+
+                    if(merchants_copy[transfer.merchant_id].circle){
+                        merchants_copy[transfer.merchant_id].circle.setRadius(merchants_copy[transfer.merchant_id].visits * 20);
+                        continue;
+                    }
 
                     var circle = new google.maps.Circle({
                           strokeColor: '#FF0000',
@@ -418,11 +438,14 @@ $(function(){
 
         $('#account').empty().append(
             $('<option>').text('All Accounts').val(0)
-        ).attr('disabled', true);
+        );
+
+        disable_input();
 
         customer_id_old = customer_id;
         customer_accounts = null;
         customer_loc = null;
+        customer_first_load = true;
         fetched_data = {
             merchants: null,
             payer: null,

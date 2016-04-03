@@ -87,6 +87,11 @@ button:hover {
     padding: 8px 12px;
     color: #999;
     border-bottom: 1px solid #d5d5d5;
+    cursor: pointer;
+}
+
+.purchase-date:hover {
+    background: #f5f5f5;
 }
 
 .purchase-date.selected {

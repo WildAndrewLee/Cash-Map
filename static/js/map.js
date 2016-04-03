@@ -9,6 +9,8 @@ $(function(){
         '#997755'
     ];
 
+    var payer_loc = null;
+
     /*
      * Generate a human date string.
      */
@@ -37,6 +39,43 @@ $(function(){
     };
 
     /*
+     * Fetch purchases
+     */
+    var get_all_purchases = function(accounts, date){
+        var promise = $.Deferred();
+        var all_done = [];
+
+        for(var x = 0; x < accounts.length; x++){
+            var id = accounts[x]._id;
+            var new_promise = $.Deferred();
+
+            (function(new_promise, id, new_promise){
+                get_purchases(id).then(function(purchases){
+                    new_promise.resolve(purchases);
+                });
+            })(new_promise, id, new_promise);
+
+            all_done.push(new_promise);
+        }
+
+        $.when.apply(null, all_done).then(function(){
+            var data = [];
+
+            for(var x = 0; x < arguments.length; x++)
+                $.merge(data, arguments[x]);
+
+            if(typeof date !== 'undefined')
+                data = data.filter(function(purchase){
+                    return purchase.purchase_date === date;
+                });
+
+            promise.resolve(data);
+        });
+
+        return promise;
+    };
+
+    /*
      * Generate date tabs.
      */
     var create_dates = function(data){
@@ -54,6 +93,9 @@ $(function(){
             $('<aside>').attr('id', date)
                 .addClass('purchase-date')
                 .text(formatted_date)
+                .click(function(){
+                    do_the_thing($(this).attr('id'));
+                })
                 .appendTo('#dates');
 
             dates[date] = 0;
@@ -63,7 +105,7 @@ $(function(){
     /*
      * Generate data to draw.
      */
-    var gen_draw_data = function(payer, data){
+    var gen_draw_data = function(data){
         var transfers = {};
         var merchants = {};
 
@@ -104,14 +146,12 @@ $(function(){
          * of purchases.
          */
         var Purchase = function(merchant_id, amount){
-            Transfer.call(this, payer, merchants[merchant_id].geocode);
+            Transfer.call(this, payer_loc, merchants[merchant_id].geocode);
             this.merchant_id = merchant_id,
             this.amount = amount;
         };
 
         Purchase.prototype = Object.create(Transfer.prototype);
-
-        create_dates(data);
 
         var promise = $.Deferred();
 
@@ -163,7 +203,7 @@ $(function(){
             else{
                 window.clearInterval(loader);
                 $.when.apply(null, all_done).done(function(){
-                    promise.resolve(payer, merchants, transfers);
+                    promise.resolve(payer_loc, merchants, transfers);
                 });
             }
         };
@@ -278,11 +318,10 @@ $(function(){
         });
     }
 
-    $('#process-customer').click(function(){
+    var do_the_thing = function(date){
         /*
          * Runtime variables.
          */
-        var payer_loc = null;
         var customer_id = $('#customer').val();
 
         $('#loading').css('display', 'flex');
@@ -291,32 +330,20 @@ $(function(){
            payer_loc = payer;
            return get_accounts(customer_id);
         }).then(function(accounts){
-            var promise = $.Deferred();
-            var all_done = [];
-
-            for(var x = 0; x < accounts.length; x++){
-                var id = accounts[x]._id;
-                var new_promise = $.Deferred();
-
-                (function(new_promise, id, new_promise){
-                    get_purchases(id).then(function(purchases){
-                        new_promise.resolve(purchases);
-                    });
-                })(new_promise, id, new_promise);
-
-                all_done.push(new_promise);
+            return get_all_purchases(accounts, date);
+        }).then(function(data){
+            if(typeof date === 'undefined'){
+                create_dates(data);
             }
 
-            $.when.apply(null, all_done).then(function(){
-                var data = [];
-
-                for(var x = 0; x < arguments.length; x++)
-                    $.merge(data, arguments[x]);
-
-                promise.resolve(payer_loc, data);
-            });
+            var promise = $.Deferred();
+            promise.resolve.apply(promise, arguments);
 
             return promise;
         }).then(gen_draw_data).then(draw_data);
+    };
+
+    $('#process-customer').click(function(){
+        do_the_thing();
     });
 });

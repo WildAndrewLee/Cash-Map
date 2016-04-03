@@ -81,6 +81,11 @@ $(function(){
         var payer_loc = null;
 
         var customer_id = $('#customer').val();
+        var loading = document.getElementById("loading");
+        var map_display = document.getElementById("map");
+
+        loading.style.display = "flex";
+        map_display.style.display = "none";
 
         get_location(customer_id).then(function(payer){
            payer_loc = payer;
@@ -218,6 +223,8 @@ $(function(){
                 }
             }
 
+            loading.style.display = "none";
+            map_display.style.display = "flex";
             var map = new google.maps.Map(ele, {
                 center: payer
             });
@@ -294,7 +301,6 @@ $(function(){
                 setTimeout(function(){
                     window.requestAnimationFrame(render);
                 }, 500);
-
                 listener.remove();
             });
         });

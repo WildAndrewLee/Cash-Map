@@ -90,6 +90,18 @@ function get_purchases(account_id){
     return $.getJSON(api_route('accounts', account_id, 'purchases')).promise();
 }
 
+// function setLoading(div) {
+//     var span = document.createElement("span");
+//     var i = document.createElement("i");
+//     i.className = "fa fa-spinner fa-spin";
+//     span.appendChild(i);
+//     span.innerHTML = span.innerHTML +  " Loading";
+//     span.style["font-size"] = "2.5em";
+//     span.style["text-align"] = "center";
+//     span.style["color"] = "#777777";
+//     div.appendChild(span);
+// }
+
 function map_properties(transfers, height, width) {
     if (transfers.length == 0) return;
 

@@ -1,5 +1,5 @@
 var API_KEY = "b568190515477bcebfc064f6b6246925";
-var API_PATH = 'http://api.reimaginebanking.com/enterprise';
+var API_PATH = 'http://api.reimaginebanking.com';
 var geocoder;
 
 $(function(){
@@ -59,7 +59,7 @@ function get_customer(customer_id, callback) {
 };
 
 // gets the location of a given customer_id
-function get_location(customer_id, callback) {
+function get_location(customer_id) {
     var promise = $.Deferred();
 
     get_customer(customer_id).done(function(response){
@@ -81,6 +81,14 @@ function get_location(customer_id, callback) {
 
     return promise;
 };
+
+function get_accounts(customer_id){
+    return $.getJSON(api_route('customers', customer_id, 'accounts')).promise();
+}
+
+function get_purchases(account_id){
+    return $.getJSON(api_route('accounts', account_id, 'purchases')).promise();
+}
 
 function map_properties(transfers, height, width) {
     if (transfers.length == 0) return;

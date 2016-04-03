@@ -1,7 +1,10 @@
 var API_KEY = "b568190515477bcebfc064f6b6246925";
-API_KEY = '?=' + API_KEY;
-var geocoder = new google.maps.Geocoder();
-var API_PATH = 'http://api.reimaginebanking.com/enterprise/';
+var API_PATH = 'http://api.reimaginebanking.com';
+var geocoder;
+
+$(function(){
+    geocoder = new google.maps.Geocoder();
+});
 
 // changes a given customer id to its latitude/longtitude coordinates
 $(function() {
@@ -17,11 +20,11 @@ $(function() {
 
 function api_route(){
     var route = API_PATH;
-    
+
     for(var x = 0; x < arguments.length; x++)
         route += '/' + arguments[x];
 
-    return route + API_KEY;
+    return route + '?key=' + API_KEY;
 }
 
 function get_account(account_id){
@@ -46,7 +49,7 @@ function get_merchant(merchant_id){
 
 // gets the customer of a given customer_id
 function get_customer(customer_id, callback) {
-    var promise = $.getJSON(api_route('customers', customer_id).promise());
+    var promise = $.getJSON(api_route('customers', customer_id)).promise();
 
     promise.fail(function(){
         console.log('Unable to fetch customer information for ID: ' + customer_id);
@@ -56,11 +59,11 @@ function get_customer(customer_id, callback) {
 };
 
 // gets the location of a given customer_id
-function get_location(customer_id, callback) {
+function get_location(customer_id) {
     var promise = $.Deferred();
-    
+
     get_customer(customer_id).done(function(response){
-        var loc = response['address'];    
+        var loc = response['address'];
         var address = loc["street_number"] + " " + loc["street_name"] + ", " + loc["city"] + ", " + loc["state"];
 
         geocoder.geocode({'address': address}, function(results, status) {
@@ -69,7 +72,7 @@ function get_location(customer_id, callback) {
                 var lng = results[0].geometry.location.lng();
 
                 promise.resolve({lat: lat, lng: lng});
-            } 
+            }
             else {
                 promise.reject("Geocode was not successful for the following reason: " + status);
             }
@@ -78,6 +81,14 @@ function get_location(customer_id, callback) {
 
     return promise;
 };
+
+function get_accounts(customer_id){
+    return $.getJSON(api_route('customers', customer_id, 'accounts')).promise();
+}
+
+function get_purchases(account_id){
+    return $.getJSON(api_route('accounts', account_id, 'purchases')).promise();
+}
 
 function map_properties(transfers, height, width) {
     if (transfers.length == 0) return;
@@ -117,16 +128,11 @@ function map_properties(transfers, height, width) {
 
     zoom = Math.min(latZoom, lngZoom, ZOOM_MAX);
 
-    return { zoom: zoom, 
-             center: { lat: (max_lat - min_lat) / 2}, 
-                       lng: (max_lng - min_lng) / 2};
+    return {
+        zoom: zoom,
+        center: {
+            lat: (max_lat + min_lat) / 2,
+            lng: (max_lng + min_lng) / 2
+        }
+    };
 }
-
-// jumbotron scrolling
-function parallax(){
-    var scrolled = $(window).scrollTop();
-    $('.bg').css('height', (275-scrolled) + 'px');
-}
-$(window).scroll(function(e){
-    parallax();
-});

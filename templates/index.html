@@ -6,7 +6,7 @@
         <link href='//fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="/css/main.css" rel="stylesheet">
-        <script src="/js/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
         <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyD6F20KPQ8HYqTEZpweGaBPaMnRKu_MGcI" type="text/javascript"></script>
         <!-- <script async defer src="https://maps.googleapis.com/maps/api/js"> </script> -->
     </head>
@@ -21,6 +21,13 @@
                         </button>
                     </div>
                 </div>
+                <div class="input-group">
+                    <div>
+                        <select id="account">
+                            <option value="0">All Accounts</option>
+                        </select>
+                    </div>
+                </div>
             </aside>
             <header>
                 <h3>Purchase Date</h3>
@@ -28,9 +35,11 @@
             <div id="dates">
             </div>
         </aside>
-
-        <div id="loading">
-            <span id="loading_msg"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+        <div id="loading" class="center-container">
+            <span class="center"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+        </div>
+        <div id="does-not-exist" class="center-container">
+            <span class="center">This account does not exist.</span>
         </div>
         <div id="map"></div>
         <script src="/js/main.js"></script>

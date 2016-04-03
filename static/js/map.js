@@ -1,5 +1,9 @@
 $(function(){
     var TRANSACTION_DURATION = 50; // in frames
+
+    if(location.href.match(/\?dev/))
+        TRANSACTION_DURATION = 1;
+
     var COLORS = [
         '#E03232',
         '#FF11EE',
@@ -11,6 +15,10 @@ $(function(){
 
     var customer_id_old = null;
     var customer_loc = null;
+    var customer_accounts = null;
+
+    var current_view = null;
+
     var fetched_data = {
         merchants: null,
         payer: null,
@@ -41,18 +49,19 @@ $(function(){
             'December'
         ];
 
-        return months[parseInt(month)] + ' ' + day + ', ' + year;
+        return months[parseInt(month) - 1] + ' ' + day + ', ' + year;
     };
 
     /*
      * Fetch purchases
      */
-    var get_all_purchases = function(accounts, date){
+    var get_all_purchases = function(accounts, filter){
         var promise = $.Deferred();
         var all_done = [];
 
         for(var x = 0; x < accounts.length; x++){
             var id = accounts[x]._id;
+
             var new_promise = $.Deferred();
 
             (function(new_promise, id){
@@ -70,10 +79,8 @@ $(function(){
             for(var x = 0; x < arguments.length; x++)
                 $.merge(data, arguments[x]);
 
-            if(typeof date !== 'undefined')
-                data = data.filter(function(purchase){
-                    return purchase.purchase_date === date;
-                });
+            if(typeof filter === 'function')
+                data = data.filter(filter);
 
             promise.resolve(data);
         });
@@ -88,6 +95,10 @@ $(function(){
         var dates = {};
         $('#dates').empty();
 
+        data.sort(function(a, b){
+            return new Date(a.purchase_date) - new Date(b.purchase_date);
+        });
+
         data.forEach(function(purchase){
             var date = purchase.purchase_date;
 
@@ -100,12 +111,11 @@ $(function(){
                 .addClass('purchase-date')
                 .text(formatted_date)
                 .click(function(){
-                    $('#loading').css('display', 'flex');
+                    $('.selected').removeClass('selected');
+                    $('#' + dates[0]).addClass('selected');
 
-                    var obj = {};
-                    obj[date] = fetched_data.transfers[date];
-
-                    draw_data(fetched_data.payer, fetched_data.merchants, obj);
+                    current_view = date;
+                    draw_view(date);
                 })
                 .appendTo('#dates');
 
@@ -160,8 +170,9 @@ $(function(){
          * Basic purchase class to keep track
          * of purchases.
          */
-        var Purchase = function(merchant_id, amount){
+        var Purchase = function(account_id, merchant_id, amount){
             Transfer.call(this, customer_loc, merchants[merchant_id].geocode);
+            this.account_id = account_id;
             this.merchant_id = merchant_id,
             this.amount = amount;
         };
@@ -180,12 +191,12 @@ $(function(){
             var add_transfer = function(){
                 if(!transfers.hasOwnProperty(data.purchase_date)){
                     transfers[data.purchase_date] = [
-                        new Purchase(data.merchant_id, data.amount)
+                        new Purchase(data.payer_id, data.merchant_id, data.amount)
                     ];
                 }
                 else{
                     transfers[data.purchase_date].push(
-                        new Purchase(data.merchant_id, data.amount)
+                        new Purchase(data.payer_id, data.merchant_id, data.amount)
                     );
                 }
             };
@@ -246,6 +257,8 @@ $(function(){
      * Draw transfer data.
      */
     var draw_data = function(payer, merchants, transfers){
+        $('#account').attr('disabled', true);
+
         var ele = $('#map').get(0);
 
         var bounds = new google.maps.LatLngBounds();
@@ -286,6 +299,7 @@ $(function(){
             fillColor: '#000000',
             fillOpacity: 0.35
         });
+
         home.setMap(map);
 
         var dates = Object.getOwnPropertyNames(transfers);
@@ -295,14 +309,26 @@ $(function(){
 
         var color_index = 0;
         var merchants_copy = $.extend(true, {}, merchants);
+        var selected_account = $('#account').val();
 
         function render(){
             if(!dates.length){
+                $('#account').removeAttr('disabled');
                 return;
             }
 
             var day = transfers[dates[0]];
             var done = false;
+
+            day = day.filter(function(transfer){
+                return selected_account == '0' || transfer.account_id === selected_account;
+            });
+
+            if(!day.length){
+                dates.shift();
+                window.requestAnimationFrame(render);
+                return;
+            }
 
             for(var x = 0; x < day.length; x++){
                 var transfer = day[x];
@@ -315,9 +341,6 @@ $(function(){
                 });
 
                 path.setMap(map);
-
-                $('.selected').removeClass('selected');
-                $('#' + dates[0]).addClass('selected');
 
                 if(transfer.increment()){
                     done = true;
@@ -334,7 +357,7 @@ $(function(){
                           fillColor: '#FF0000',
                           fillOpacity: 0.25,
                           center: transfer.end,
-                          radius: merchants_copy[transfer.merchant_id].visits * 10
+                          radius: merchants_copy[transfer.merchant_id].visits * 20
                     });
 
                     (function(circle, transfer){
@@ -369,29 +392,59 @@ $(function(){
         });
     }
 
+    var draw_view = function(view){
+        $('#loading').css('display', 'flex');
+
+        if(typeof view === 'undefined' || view === 'all'){
+            draw_data(fetched_data.payer, fetched_data.merchants, fetched_data.transfers);
+        }
+        else{
+            var obj = {};
+            obj[view] = fetched_data.transfers[view];
+
+            draw_data(fetched_data.payer, fetched_data.merchants, obj);
+        }
+    };
+
     var do_the_thing = function(){
-        /*
-         * Runtime variables.
-         */
         var customer_id = $('#customer').val();
 
+        $('#does-not-exist').hide();
+
         if(customer_id === customer_id_old){
-            draw_data(fetched_data.payer, fetched_data.merchants, fetched_data.transfers);
+            draw_view();
             return;
         }
 
-        customer_id_old = customer_id;
+        $('#account').empty().append(
+            $('<option>').text('All Accounts').val(0)
+        ).attr('disabled', true);
 
-        $('#does-not-exist').hide();
+        customer_id_old = customer_id;
+        customer_accounts = null;
+        customer_loc = null;
+        fetched_data = {
+            merchants: null,
+            payer: null,
+            transfers: null
+        };
+
+        $('#dates').empty();
+
         $('#loading').css('display', 'flex');
 
-        get_location(customer_id).fail(function(){
-            $('#does-not-exist').css('display', 'flex');
-        }).then(function(payer){
-           customer_loc = payer;
-           return get_accounts(customer_id);
-        })
-        .then(function(accounts){
+        get_location(customer_id).then(function(payer){
+            customer_loc = payer;
+            return get_accounts(customer_id);
+        }).then(function(accounts){
+            customer_accounts = accounts;
+
+            accounts.forEach(function(account){
+                $('#account').append(
+                    $('<option>').text(account.nickname).val(account._id)
+                );
+            });
+
             return get_all_purchases(accounts);
         })
         .then(create_dates)
@@ -400,7 +453,12 @@ $(function(){
         .then(draw_data);
     };
 
+    $('#account').change(function(){
+        draw_view(current_view);
+    });
+
     $('#process-customer').click(function(){
         do_the_thing();
+        current_view = 'all';
     });
 });

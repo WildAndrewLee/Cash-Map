@@ -48,11 +48,13 @@ function get_merchant(merchant_id){
 }
 
 // gets the customer of a given customer_id
-function get_customer(customer_id, callback) {
+function get_customer(customer_id) {
     var promise = $.getJSON(api_route('customers', customer_id)).promise();
 
     promise.fail(function(){
         console.log('Unable to fetch customer information for ID: ' + customer_id);
+        $('#loading').css('display', 'none');
+        $('#does-not-exist').css('display', 'flex');
     });
 
     return promise;

@@ -7,7 +7,6 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="/css/main.css" rel="stylesheet">
         <script src="/js/jquery.min.js"></script>
-        <script src="/js/main.js"></script>
         <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyD6F20KPQ8HYqTEZpweGaBPaMnRKu_MGcI" type="text/javascript"></script>
         <!-- <script async defer src="https://maps.googleapis.com/maps/api/js"> </script> -->
     </head>
@@ -16,7 +15,7 @@
             <aside id="update-info">
                 <div class="input-group">
                     <div>
-                        <input type="text" id="customer" placeholder="Customer ID" />
+                        <input type="text" id="customer" placeholder="Customer ID" value="56ff1609480cf02f0f88a574"/>
                         <button id="process-customer">
                             <span class="fa fa-arrow-right"></span>
                         </button>
@@ -29,7 +28,12 @@
             <div id="dates">
             </div>
         </aside>
+
+        <div id="loading">
+            <span id="loading_msg"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+        </div>
         <div id="map"></div>
+        <script src="/js/main.js"></script>
         <script src="/js/map.js"></script>
     </body>
 </html>

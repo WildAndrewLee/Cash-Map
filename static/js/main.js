@@ -90,6 +90,12 @@ function get_purchases(account_id){
     return $.getJSON(api_route('accounts', account_id, 'purchases')).promise();
 }
 
+$("#customer").keyup(function (e) {
+    if (e.keyCode == 13) {
+        $("#process-customer").click();
+    }
+});
+
 function map_properties(transfers, height, width) {
     if (transfers.length == 0) return;
 

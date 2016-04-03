@@ -272,6 +272,8 @@ $(function(){
                 window.requestAnimationFrame(render);
             }, 500);
 
+            $('#loading').css('display', 'none');
+
             listener.remove();
         });
     }
@@ -282,6 +284,8 @@ $(function(){
          */
         var payer_loc = null;
         var customer_id = $('#customer').val();
+
+        $('#loading').css('display', 'flex');
 
         get_location(customer_id).then(function(payer){
            payer_loc = payer;

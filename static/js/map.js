@@ -9,7 +9,13 @@ $(function(){
         '#997755'
     ];
 
-    var payer_loc = null;
+    var customer_id_old = null;
+    var customer_loc = null;
+    var fetched_data = {
+        merchants: null,
+        payer: null,
+        transfers: null
+    };
 
     /*
      * Generate a human date string.
@@ -49,11 +55,11 @@ $(function(){
             var id = accounts[x]._id;
             var new_promise = $.Deferred();
 
-            (function(new_promise, id, new_promise){
+            (function(new_promise, id){
                 get_purchases(id).then(function(purchases){
                     new_promise.resolve(purchases);
                 });
-            })(new_promise, id, new_promise);
+            })(new_promise, id);
 
             all_done.push(new_promise);
         }
@@ -94,12 +100,21 @@ $(function(){
                 .addClass('purchase-date')
                 .text(formatted_date)
                 .click(function(){
-                    do_the_thing($(this).attr('id'));
+                    $('#loading').css('display', 'flex');
+
+                    var obj = {};
+                    obj[date] = fetched_data.transfers[date];
+
+                    draw_data(fetched_data.payer, fetched_data.merchants, obj);
                 })
                 .appendTo('#dates');
 
             dates[date] = 0;
         });
+
+        var promise = $.Deferred();
+        promise.resolve(data);
+        return promise;
     };
 
     /*
@@ -146,7 +161,7 @@ $(function(){
          * of purchases.
          */
         var Purchase = function(merchant_id, amount){
-            Transfer.call(this, payer_loc, merchants[merchant_id].geocode);
+            Transfer.call(this, customer_loc, merchants[merchant_id].geocode);
             this.merchant_id = merchant_id,
             this.amount = amount;
         };
@@ -203,12 +218,26 @@ $(function(){
             else{
                 window.clearInterval(loader);
                 $.when.apply(null, all_done).done(function(){
-                    promise.resolve(payer_loc, merchants, transfers);
+                    promise.resolve(customer_loc, merchants, transfers);
                 });
             }
         };
 
         loader = window.setInterval(load_data, 100);
+
+        return promise;
+    };
+
+    /*
+     * Cache data.
+     */
+    var cache_data = function(payer, merchants, transfers){
+        fetched_data.payer = payer;
+        fetched_data.merchants = merchants;
+        fetched_data.transfers = transfers;
+
+        var promise = $.Deferred();
+        promise.resolve(payer, merchants, transfers);
 
         return promise;
     };
@@ -237,16 +266,40 @@ $(function(){
 
         map.fitBounds(bounds);
 
+        var d = Math.max(Math.abs(bounds.R.R - bounds.R.j), Math.abs(bounds.j.R - bounds.j.j)) / 80;
+        var coords = [
+            {lat: payer.lat + d, lng: payer.lng},
+            {lat: payer.lat,     lng: payer.lng - d * 1.5},
+            {lat: payer.lat,     lng: payer.lng - d},
+            {lat: payer.lat - d * 0.8, lng: payer.lng - d},
+            {lat: payer.lat - d * 0.8, lng: payer.lng},
+            {lat: payer.lat - d * 0.8, lng: payer.lng + d},
+            {lat: payer.lat,     lng: payer.lng + d},
+            {lat: payer.lat,     lng: payer.lng + d * 1.5}
+        ];
+
+        var home = new google.maps.Polygon({
+            paths: coords,
+            strokeColor: '#000000',
+            strokeOpacity: 0.9,
+            strokeWeight: 1,
+            fillColor: '#000000',
+            fillOpacity: 0.35
+        });
+        home.setMap(map);
+
         var dates = Object.getOwnPropertyNames(transfers);
         dates.sort(function(a, b){
             return new Date(a) - new Date(b);
         });
 
         var color_index = 0;
+        var merchants_copy = $.extend(true, {}, merchants);
 
         function render(){
-            if(!dates.length)
+            if(!dates.length){
                 return;
+            }
 
             var day = transfers[dates[0]];
             var done = false;
@@ -269,10 +322,10 @@ $(function(){
                 if(transfer.increment()){
                     done = true;
 
-                    if(merchants[transfer.merchant_id].circle)
-                        merchants[transfer.merchant_id].circle.setMap(null);
+                    if(merchants_copy[transfer.merchant_id].circle)
+                        merchants_copy[transfer.merchant_id].circle.setMap(null);
 
-                    merchants[transfer.merchant_id].visits++;
+                    merchants_copy[transfer.merchant_id].visits++;
 
                     var circle = new google.maps.Circle({
                           strokeColor: '#FF0000',
@@ -281,13 +334,13 @@ $(function(){
                           fillColor: '#FF0000',
                           fillOpacity: 0.25,
                           center: transfer.end,
-                          radius: merchants[transfer.merchant_id].visits * 10
+                          radius: merchants_copy[transfer.merchant_id].visits * 10
                     });
 
                     (function(circle, transfer){
                         circle.addListener('click', function(){
                             var info = new google.maps.InfoWindow();
-                            info.setContent('<b>' + merchants[transfer.merchant_id].name + '</b><br /><b>Total Visits: </b>' + merchants[transfer.merchant_id].visits + '<br /><b>Amount Spent: </b>$' + merchants[transfer.merchant_id].amount);
+                            info.setContent('<b>' + merchants_copy[transfer.merchant_id].name + '</b><br /><b>Total Visits: </b>' + merchants_copy[transfer.merchant_id].visits + '<br /><b>Amount Spent: </b>$' + merchants_copy[transfer.merchant_id].amount);
                             info.setPosition(circle.getCenter());
                             info.open(map);
                         });
@@ -295,7 +348,7 @@ $(function(){
 
                     circle.setMap(map);
 
-                    merchants[transfer.merchant_id].circle = circle;
+                    merchants_copy[transfer.merchant_id].circle = circle;
                 }
             }
 
@@ -308,9 +361,7 @@ $(function(){
         }
 
         var listener = map.addListener('tilesloaded', function(){
-            setTimeout(function(){
-                window.requestAnimationFrame(render);
-            }, 500);
+            window.requestAnimationFrame(render);
 
             $('#loading').css('display', 'none');
 
@@ -318,29 +369,35 @@ $(function(){
         });
     }
 
-    var do_the_thing = function(date){
+    var do_the_thing = function(){
         /*
          * Runtime variables.
          */
         var customer_id = $('#customer').val();
 
+        if(customer_id === customer_id_old){
+            draw_data(fetched_data.payer, fetched_data.merchants, fetched_data.transfers);
+            return;
+        }
+
+        customer_id_old = customer_id;
+
+        $('#does-not-exist').hide();
         $('#loading').css('display', 'flex');
 
-        get_location(customer_id).then(function(payer){
-           payer_loc = payer;
+        get_location(customer_id).fail(function(){
+            $('#does-not-exist').css('display', 'flex');
+        }).then(function(payer){
+           customer_loc = payer;
            return get_accounts(customer_id);
-        }).then(function(accounts){
-            return get_all_purchases(accounts, date);
-        }).then(function(data){
-            if(typeof date === 'undefined'){
-                create_dates(data);
-            }
-
-            var promise = $.Deferred();
-            promise.resolve.apply(promise, arguments);
-
-            return promise;
-        }).then(gen_draw_data).then(draw_data);
+        })
+        .then(function(accounts){
+            return get_all_purchases(accounts);
+        })
+        .then(create_dates)
+        .then(gen_draw_data)
+        .then(cache_data)
+        .then(draw_data);
     };
 
     $('#process-customer').click(function(){
